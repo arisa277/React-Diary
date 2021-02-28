@@ -1,0 +1,55 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container {
+    text-align: center;
+    max-width: 200px;
+    margin: 0 auto;
+}
+
+.emojis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.025);
+    border-radius: 15px;
+    padding: 15px;
+    color: rgba(0, 0, 0, 0.8);
+    font-size: 18px;
+    margin-bottom: 15px;
+}
+
+.emojis span {
+    display: block;
+    font-size: 40px;
+    cursor: pointer;
+}
+
+.emoji span.selected {
+    text-shadow: 0 0 5px rgba(0, 0, 0, 1);
+}
+
+textarea {
+    display: block;
+    width: 100%;
+    resize: none;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.025);
+    border-radius: 15px 15px 0 0;
+    padding: 15px;
+    outline: none;
+    color: rgba(0, 0, 0, 0.8);
+    font-size: 18px;
+}
+
+button {
+    display: block;
+    border: none;
+    width: 100%;
+    padding: 10px;
+    font-size: 20px;
+    border-radius: 0 0 15px 15px;
+}
