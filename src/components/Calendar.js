@@ -1,4 +1,6 @@
 import React from "react";
+import Modal from "./Modal";
+import firebase, { db } from "../Firebase/Firebase";
 import {
   format,
   addMonths,
@@ -9,8 +11,7 @@ import {
   endOfMonth,
   endOfWeek,
   isSameDay,
-  parse,
-  isSameMonth
+  isSameMonth,
 } from "date-fns";
 import "./index.css";
 
@@ -18,7 +19,29 @@ class Calendar extends React.Component {
   state = {
     currentMonth: new Date(),
     selectedDate: new Date(),
+    diaryData: [],
   };
+
+  componentDidMount() {
+    db.collection("diary").onSnapshot((snapshot) => {
+      snapshot.docChanges().forEach((change) => {
+        if (change.type === "added") {
+          this.state.diaryData.push(change.doc.data());
+          document
+            .getElementsByClassName(
+              format(change.doc.data().date.toDate(), "yyyy-MM-dd")
+            )[0]
+            .classList.add("has-posts");
+        }
+        if (change.type === "modified") {
+          console.log("modified");
+        }
+        if (change.type === "removed") {
+          console.log("removed");
+        }
+      });
+    });
+  }
 
   renderHeader() {
     const dateFormat = "MMMM yyyy";
@@ -40,6 +63,7 @@ class Calendar extends React.Component {
   }
 
   renderDays() {
+    // 曜日
     const dateFormat = "EEEE";
     const days = [];
 
@@ -48,7 +72,7 @@ class Calendar extends React.Component {
     for (let i = 0; i < 7; i++) {
       days.push(
         <div className="col col-center" key={i}>
-          {format(addDays(startDate, i), dateFormat)}
+          {format(addDays(startDate, i), dateFormat).charAt(0)}
         </div>
       );
     }
@@ -56,7 +80,7 @@ class Calendar extends React.Component {
   }
 
   renderCells() {
-    const { currentMonth, selectedDate } = this.state;
+    const { currentMonth, selectedDate, diaryData } = this.state;
     const monthStart = startOfMonth(currentMonth);
     const monthEnd = endOfMonth(monthStart);
     const startDate = startOfWeek(monthStart);
@@ -73,9 +97,12 @@ class Calendar extends React.Component {
       for (let i = 0; i < 7; i++) {
         formattedDate = format(day, dateFormat);
         const cloneDay = day;
+        this.state.diaryData.forEach((ss) => {
+          console.log(ss);
+        });
         days.push(
           <div
-            className={`col cell ${
+            className={`col cell ${format(day, "yyyy-MM-dd")} ${
               !isSameMonth(day, monthStart)
                 ? "disabled"
                 : isSameDay(day, selectedDate)
@@ -83,10 +110,9 @@ class Calendar extends React.Component {
                 : ""
             }`}
             key={day}
-            // onClick={() => this.onDateClick(parse(cloneDay))}
+            onClick={() => this.onDateClick(cloneDay)}
           >
-            <span className="number">{formattedDate}</span>
-            <span className="bg">{formattedDate}</span>
+            <span>{formattedDate}</span>
           </div>
         );
         day = addDays(day, 1);
@@ -98,13 +124,20 @@ class Calendar extends React.Component {
       );
       days = [];
     }
-    return <div className="body">{rows}</div>
+    return <div className="body">{rows}</div>;
   }
 
-  onDateClick = day => {
-    this.setState({
-      selectedDate: day
-    })
+  onDateClick = (day) => {
+    const choseDay = format(day, "yyyyMMdd");
+    this.state.diaryData.forEach((data, index) => {
+      if (choseDay == format(data.date.toDate(), "yyyyMMdd")) {
+        console.log(
+          this.state.diaryData[index].emoji,
+          this.state.diaryData[index].kimochi
+        );
+      } else {
+      }
+    });
   };
 
   nextMonth = () => {
