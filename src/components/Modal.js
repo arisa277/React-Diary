@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, {useState } from "react";
 import firebase, { db } from "../Firebase/Firebase";
 
 const Modal = () => {
-  const [show, setShow] = useState(false);
+  const [isVisible, setIsVisible] = useState();
   const [emoji, setEmoji] = useState("");
   const [kimochi, setKimochi] = useState("");
 
@@ -17,7 +17,7 @@ const Modal = () => {
         .then(() => {
           setEmoji("");
           setKimochi("");
-          setShow(false);
+          setIsVisible(false);
           console.log("yay");
         })
         .catch((err) => {
@@ -30,9 +30,9 @@ const Modal = () => {
   }
 
   const modalContent = () => {
-    if (show) {
+    if (isVisible) {
       return (
-        <div className="overlay" onClick={() => setShow(false)}>
+        <div className="overlay" onClick={() => setIsVisible(false)}>
           <div
             className="modal-content"
             onClick={(event) => event.stopPropagation()}
@@ -71,7 +71,7 @@ const Modal = () => {
 
   return (
     <div>
-      <button className="modal-btn" onClick={() => setShow(true)}>
+      <button className="modal-btn" onClick={() => setIsVisible(true)}>
         Add today's feeling
       </button>
       <div>{modalContent()}</div>

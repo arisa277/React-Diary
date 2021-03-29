@@ -9,9 +9,6 @@ class App extends React.Component {
       <div className="container">
           <h1>React-Diary</h1>
           <Calendar />
-        <div className="modal-area">
-          <Modal/>
-        </div>
       </div>
     );
   }

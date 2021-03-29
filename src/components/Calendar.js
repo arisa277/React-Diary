@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import Modal from "./Modal";
 import firebase, { db } from "../Firebase/Firebase";
 import {
@@ -16,10 +16,14 @@ import {
 import "./index.css";
 
 class Calendar extends React.Component {
+  // constructor(props) {
+  //   super(props);
+  // }
   state = {
     currentMonth: new Date(),
     selectedDate: new Date(),
     diaryData: [],
+    modalIsVisible: false,
   };
 
   componentDidMount() {
@@ -27,11 +31,11 @@ class Calendar extends React.Component {
       snapshot.docChanges().forEach((change) => {
         if (change.type === "added") {
           this.state.diaryData.push(change.doc.data());
-          document
-            .getElementsByClassName(
-              format(change.doc.data().date.toDate(), "yyyy-MM-dd")
-            )[0]
-            .classList.add("has-posts");
+          // document
+          //   .getElementsByClassName(
+          //     format(change.doc.data().date.toDate(), "yyyy-MM-dd")
+          //   )[0]
+          //   .classList.add("has-posts");
         }
         if (change.type === "modified") {
           console.log("modified");
@@ -129,15 +133,20 @@ class Calendar extends React.Component {
 
   onDateClick = (day) => {
     const choseDay = format(day, "yyyyMMdd");
+    var numberOfPosts = 0;
     this.state.diaryData.forEach((data, index) => {
       if (choseDay == format(data.date.toDate(), "yyyyMMdd")) {
+        numberOfPosts += 1;
         console.log(
           this.state.diaryData[index].emoji,
-          this.state.diaryData[index].kimochi
+          this.state.diaryData[index].kimochi,
+          numberOfPosts
         );
-      } else {
       }
     });
+    if (numberOfPosts == 0) {
+      this.state.modalIsVisible = true;
+    }
   };
 
   nextMonth = () => {
