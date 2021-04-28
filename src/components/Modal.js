@@ -1,41 +1,19 @@
 import React, { useState } from "react";
 import firebase, { db } from "../Firebase/Firebase";
 
-const Modal = () => {
-  const [show, setShow] = useState(false);
+const Modal = (props) => {
+  const [isVisible, setIsVisible] = useState(false)
   const [emoji, setEmoji] = useState("");
   const [kimochi, setKimochi] = useState("");
 
-  function postFeeling() {
-    if (kimochi.length > 0) {
-      db.collection("diary")
-        .add({
-          date: firebase.firestore.FieldValue.serverTimestamp(),
-          kimochi: kimochi,
-          emoji: emoji,
-        })
-        .then(() => {
-          setEmoji("");
-          setKimochi("");
-          setShow(false);
-          console.log("yay");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    } else {
-      console.log("nothing?");
-    }
-    console.log("err?");
-  }
 
-  const modalContent = () => {
-    if (show) {
-      return (
-        <div className="overlay" onClick={() => setShow(false)}>
-          <div
+  return (
+    <div>
+      {props.isVisible && (
+        <div className="overlay" onClick={props.closeModalHandler}>
+          <form
             className="modal-content"
-            onClick={(event) => event.stopPropagation()}
+            onSubmit={props.addFeeling}
           >
             <div className="posting">
               <p>How was your day? {emoji}</p>
@@ -58,23 +36,14 @@ const Modal = () => {
                   className="kimochi"
                   onChange={(e) => setKimochi(e.target.value)}
                 ></textarea>
-                <button className="add-btn" onClick={() => postFeeling()}>
+                <button className="add-btn" onClick={props.postFeeling}>
                   Add today's feeling !
                 </button>
               </div>
             </div>
-          </div>
+          </form>
         </div>
-      );
-    }
-  };
-
-  return (
-    <div>
-      <button className="modal-btn" onClick={() => setShow(true)}>
-        Add today's feeling
-      </button>
-      <div>{modalContent()}</div>
+      )}
     </div>
   );
 };
