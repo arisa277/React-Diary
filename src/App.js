@@ -8,7 +8,7 @@ class App extends React.Component {
     return (
       <div className="container">
           <h1>React-Diary</h1>
-          <Calendar/>
+          <Calendar />
       </div>
     );
   }
