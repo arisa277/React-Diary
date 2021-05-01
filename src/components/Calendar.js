@@ -26,6 +26,7 @@ class Calendar extends React.Component {
     clickedDate: new Date(),
     id: "",
     dataExisted: false,
+    errorMessage: ""
   };
 
   componentDidMount() {
@@ -183,6 +184,7 @@ class Calendar extends React.Component {
   };
 
   closeModal = () => {
+    this.setState({errorMessage: ""})
     this.setState({ modalIsVisible: false });
   };
 
@@ -196,6 +198,11 @@ class Calendar extends React.Component {
 
   postFeeling = (e) => {
     e.preventDefault();
+    if(!this.state.emoji) {
+      this.setState({errorMessage: "Please click your feeling!"})
+      return
+    }
+    this.setState({errorMessage: ""})
     db.collection("diary")
       .add({
         date: this.state.clickedDate,
@@ -255,6 +262,7 @@ class Calendar extends React.Component {
               emoji={this.state.emoji}
               closeModalHandler={this.closeModal}
               dataExisted={this.state.dataExisted}
+              errorMessage={this.state.errorMessage}
             />
           )}
         </div>

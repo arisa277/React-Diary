@@ -16,6 +16,7 @@ const Modal = (props) => {
             <span onClick={props.emojiHandler}>😢</span>
             <span onClick={props.emojiHandler}>😀</span>
           </div>
+          <p className="errorMessage">{props.errorMessage}</p>
           <div className="message">
             <textarea
               className="kimochi"
