@@ -1,4 +1,5 @@
 import React from "react";
+import './Modal.css'
 
 const Modal = (props) => {
   return (
@@ -9,7 +10,8 @@ const Modal = (props) => {
         onSubmit={props.dataExisted ? props.updateFeeling : props.addFeeling}
       >
         <div className="posting">
-          <p>How was your day? {props.emoji}</p>
+          <p className="clickedDay">{props.day}</p>
+          <p className="question">How was your day? {props.emoji}</p>
           <div className="emojis">
             <span onClick={props.emojiHandler}>😆</span>
             <span onClick={props.emojiHandler}>😡</span>
@@ -27,7 +29,7 @@ const Modal = (props) => {
             <button className="add-btn" type="submit">
               {props.dataExisted
                 ? "Update your feeling!"
-                : "Add your feeling of this day!"}
+                : "Add your feeling!"}
             </button>
           </div>
         </div>

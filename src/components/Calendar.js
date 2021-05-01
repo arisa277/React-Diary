@@ -13,7 +13,7 @@ import {
   isSameDay,
   isSameMonth,
 } from "date-fns";
-import "./index.css";
+import "./Calendar.css";
 
 class Calendar extends React.Component {
   state = {
@@ -23,10 +23,10 @@ class Calendar extends React.Component {
     modalIsVisible: false,
     emoji: "",
     kimochi: "",
-    clickedDate: new Date(),
+    clickedDate: "",
     id: "",
     dataExisted: false,
-    errorMessage: ""
+    errorMessage: "",
   };
 
   componentDidMount() {
@@ -37,7 +37,7 @@ class Calendar extends React.Component {
         if (change.type === "added") {
           this.state.diaryData.push(data);
           const dayElement = document.getElementsByClassName(
-            format(data.date.toDate(), "yyyy-MM-dd")
+            format(data.date.toDate(), "yyyy.MM.dd")
           )[0];
           if (dayElement) {
             dayElement.classList.add("has-posts");
@@ -115,7 +115,7 @@ class Calendar extends React.Component {
 
         days.push(
           <div
-            className={`col cell ${format(day, "yyyy-MM-dd")} ${
+            className={`col cell ${format(day, "yyyy.MM.dd")} ${
               !isSameMonth(day, monthStart)
                 ? "disabled"
                 : isSameDay(day, selectedDate)
@@ -137,34 +137,31 @@ class Calendar extends React.Component {
       );
       days = [];
     }
-    this.componentDidMount()
+    this.componentDidMount();
     return <div className="body">{rows}</div>;
   }
 
   onDateClick = (day) => {
-    const choseDay = format(day, "yyyyMMdd");
+    const choseDay = format(day, "yyyy.MM.dd");
     var numberOfPosts = 0;
     this.state.diaryData.forEach((data, index) => {
       // when i clicked on the data that already existed
-      if (choseDay == format(data.date.toDate(), "yyyyMMdd")) {
+      if (choseDay == format(data.date.toDate(), "yyyy.MM.dd")) {
         numberOfPosts++;
         this.setState({ emoji: data.emoji });
         this.setState({ kimochi: data.kimochi });
-        this.setState({ clickedDate: day });
+        this.setState({ clickedDate: choseDay });
         this.setState({ dataExisted: true });
         this.getId(index);
         this.showModal();
       }
     });
-
+    
     if (numberOfPosts == 0) {
-      this.setState({ emoji: "" });
-      this.setState({ kimochi: "" });
-      this.setState({ clickedDate: day });
-      this.setState({ dataExisted: false });
-      this.setState({ id: "" });
+      this.setState({ clickedDate: choseDay });
       this.showModal();
     }
+    
   };
 
   nextMonth = () => {
@@ -183,8 +180,27 @@ class Calendar extends React.Component {
     this.setState({ modalIsVisible: true });
   };
 
+  AddTodaysFeeling = () => {
+    const today = format(new Date(), "yyyy.MM.dd");
+    this.state.diaryData.forEach((data, index) => {
+      if (format(data.date.toDate(), "yyyy.MM.dd") === today) {
+        this.setState({ emoji: data.emoji });
+        this.setState({ kimochi: data.kimochi });
+        this.setState({clickedDate: today})
+        this.getId(index)
+        this.setState({ dataExisted: true });
+      }
+      this.showModal()
+    });
+  }
+
   closeModal = () => {
-    this.setState({errorMessage: ""})
+    this.setState({ emoji: "" });
+    this.setState({ kimochi: "" });
+    this.setState({ clickedDate: ""});
+    this.setState({ dataExisted: false });
+    this.setState({ id: "" });
+    this.setState({ errorMessage: "" });
     this.setState({ modalIsVisible: false });
   };
 
@@ -198,11 +214,11 @@ class Calendar extends React.Component {
 
   postFeeling = (e) => {
     e.preventDefault();
-    if(!this.state.emoji) {
-      this.setState({errorMessage: "Please click your feeling!"})
-      return
+    if (!this.state.emoji) {
+      this.setState({ errorMessage: "Please click your feeling!" });
+      return;
     }
-    this.setState({errorMessage: ""})
+    this.setState({ errorMessage: "" });
     db.collection("diary")
       .add({
         date: this.state.clickedDate,
@@ -263,10 +279,11 @@ class Calendar extends React.Component {
               closeModalHandler={this.closeModal}
               dataExisted={this.state.dataExisted}
               errorMessage={this.state.errorMessage}
+              day={this.state.clickedDate}
             />
           )}
         </div>
-        <button className="add-btn" onClick={this.showModal}>
+        <button className="add-btn" onClick={this.AddTodaysFeeling}>
           Add today's your feeling!
         </button>
       </div>

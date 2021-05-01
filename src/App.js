@@ -1,12 +1,12 @@
 import React from "react";
 import Calendar from "./components/Calendar";
-import "./components/index.css";
+import "./index.css";
 
 class App extends React.Component {
   render() {
     return (
       <div className="container">
-          <h1>React-Diary</h1>
+          <h1>Mood Tracker</h1>
           <Calendar />
       </div>
     );
