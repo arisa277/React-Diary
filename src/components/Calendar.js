@@ -1,6 +1,6 @@
-import React, { useRef, useState } from "react";
+import React from "react";
 import Modal from "./Modal";
-import { db } from "../Firebase/Firebase";
+import firebase, { db } from "../Firebase/Firebase";
 import {
   format,
   addMonths,
@@ -22,26 +22,37 @@ class Calendar extends React.Component {
     diaryData: [],
     modalIsVisible: false,
     emoji: "",
-    kimochi: ""
+    kimochi: "",
+    clickedDate: new Date(),
+    id: "",
+    dataExisted: false,
   };
 
   componentDidMount() {
     db.collection("diary").onSnapshot((snapshot) => {
       snapshot.docChanges().forEach((change) => {
+        const data = change.doc.data();
+        data.id = change.doc.id;
         if (change.type === "added") {
-          this.state.diaryData.push(change.doc.data());
+          this.state.diaryData.push(data);
           const dayElement = document.getElementsByClassName(
-            format(change.doc.data().date.toDate(), "yyyy-MM-dd")
-          )[0]
+            format(data.date.toDate(), "yyyy-MM-dd")
+          )[0];
           if (dayElement) {
             dayElement.classList.add("has-posts");
           }
         }
         if (change.type === "modified") {
-          console.log("modified");
+          let index = this.state.diaryData.findIndex((data) => {
+            return data.id == change.doc.id;
+          });
+          this.state.diaryData.splice(index, 1, data);
         }
         if (change.type === "removed") {
-          console.log("removed");
+          let index = this.state.diaryData.findIndex((data) => {
+            return data.id == change.doc.id;
+          });
+          this.state.diaryData.splice(index, 1);
         }
       });
     });
@@ -84,12 +95,11 @@ class Calendar extends React.Component {
   }
 
   renderCells() {
-    const { currentMonth, selectedDate, diaryData } = this.state;
+    const { currentMonth, selectedDate } = this.state;
     const monthStart = startOfMonth(currentMonth);
     const monthEnd = endOfMonth(monthStart);
     const startDate = startOfWeek(monthStart);
     const endDate = endOfWeek(monthEnd);
-
     const dateFormat = "d";
     const rows = [];
 
@@ -101,7 +111,7 @@ class Calendar extends React.Component {
       for (let i = 0; i < 7; i++) {
         formattedDate = format(day, dateFormat);
         const cloneDay = day;
-        this.state.diaryData.forEach((ss) => {});
+
         days.push(
           <div
             className={`col cell ${format(day, "yyyy-MM-dd")} ${
@@ -134,13 +144,25 @@ class Calendar extends React.Component {
     const choseDay = format(day, "yyyyMMdd");
     var numberOfPosts = 0;
     this.state.diaryData.forEach((data, index) => {
+      // when i clicked on the data that already existed
       if (choseDay == format(data.date.toDate(), "yyyyMMdd")) {
-       
+        numberOfPosts++;
+        this.setState({ emoji: data.emoji });
+        this.setState({ kimochi: data.kimochi });
+        this.setState({ clickedDate: day });
+        this.setState({ dataExisted: true });
+        this.getId(index);
+        this.showModal();
       }
     });
+
     if (numberOfPosts == 0) {
+      this.setState({ emoji: "" });
+      this.setState({ kimochi: "" });
+      this.setState({ clickedDate: day });
+      this.setState({ dataExisted: false });
+      this.setState({ id: "" });
       this.showModal();
-      console.log(numberOfPosts);
     }
   };
 
@@ -164,22 +186,54 @@ class Calendar extends React.Component {
     this.setState({ modalIsVisible: false });
   };
 
-  addFeeling = (e) => {
+  emojiHandler = (e) => {
+    this.setState({ emoji: e.target.innerHTML });
+  };
+
+  kimochiHandler = (e) => {
+    this.setState({ kimochi: e.target.value });
+  };
+
+  postFeeling = (e) => {
     e.preventDefault();
-      db.collection("diary")
-        .add({
-          date: db.firestore.FieldValue.serverTimestamp(),
-          kimochi: this.state.kimochi,
-          emoji: this.state.emoji,
-        })
-        .then(() => {
-          this.setState({emoji: ''})
-          this.setState({kimochi: ''})
-          console.log("yay");
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    db.collection("diary")
+      .add({
+        date: this.state.clickedDate,
+        kimochi: this.state.kimochi,
+        emoji: this.state.emoji,
+      })
+      .then(() => {
+        this.setState({ emoji: "" });
+        this.setState({ kimochi: "" });
+        this.setState({ dataExisted: false });
+        this.closeModal();
+      })
+      .catch((err) => {
+        console.err(err);
+      });
+  };
+
+  getId(index) {
+    this.setState({ id: this.state.diaryData[index].id });
+  }
+
+  updateFeeling = (e) => {
+    e.preventDefault();
+    db.collection("diary")
+      .doc(this.state.id)
+      .update({
+        kimochi: this.state.kimochi,
+        emoji: this.state.emoji,
+      })
+      .then(() => {
+        this.setState({ emoji: "" });
+        this.setState({ kimochi: "" });
+        this.setState({ dataExisted: false });
+        this.closeModal();
+      })
+      .catch((err) => {
+        console.err(err);
+      });
   };
 
   render() {
@@ -193,15 +247,19 @@ class Calendar extends React.Component {
         <div className="modal-area">
           {this.state.modalIsVisible && (
             <Modal
-              isVisible={this.state.modalIsVisible}
-              
-              postFeeling={this.closeModal}
-              addFeeling={this.addFeeling}
+              addFeeling={this.postFeeling}
+              updateFeeling={this.updateFeeling}
+              kimochiHandler={this.kimochiHandler}
+              kimochi={this.state.kimochi}
+              emojiHandler={this.emojiHandler}
+              emoji={this.state.emoji}
+              closeModalHandler={this.closeModal}
+              dataExisted={this.state.dataExisted}
             />
           )}
         </div>
         <button className="add-btn" onClick={this.showModal}>
-          Add today's feeling!
+          Add today's your feeling!
         </button>
       </div>
     );

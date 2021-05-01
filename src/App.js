@@ -1,6 +1,5 @@
 import React from "react";
 import Calendar from "./components/Calendar";
-import Modal from './components/Modal';
 import "./components/index.css";
 
 class App extends React.Component {

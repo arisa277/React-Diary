@@ -1,49 +1,36 @@
-import React, { useState } from "react";
-import firebase, { db } from "../Firebase/Firebase";
+import React from "react";
 
 const Modal = (props) => {
-  const [isVisible, setIsVisible] = useState(false)
-  const [emoji, setEmoji] = useState("");
-  const [kimochi, setKimochi] = useState("");
-
-
   return (
     <div>
-      {props.isVisible && (
-        <div className="overlay" onClick={props.closeModalHandler}>
-          <form
-            className="modal-content"
-            onSubmit={props.addFeeling}
-          >
-            <div className="posting">
-              <p>How was your day? {emoji}</p>
-
-              <div className="emojis">
-                <span
-                  onClick={(e) => setEmoji(e.target.innerHTML)}
-                  className={(e) =>
-                    emoji == e.target.innerHTML ? "selected" : ""
-                  }
-                >
-                  😆
-                </span>
-                <span onClick={(e) => setEmoji(e.target.innerHTML)}>😡</span>
-                <span onClick={(e) => setEmoji(e.target.innerHTML)}>😢</span>
-                <span onClick={(e) => setEmoji(e.target.innerHTML)}>😀</span>
-              </div>
-              <div className="message">
-                <textarea
-                  className="kimochi"
-                  onChange={(e) => setKimochi(e.target.value)}
-                ></textarea>
-                <button className="add-btn" onClick={props.postFeeling}>
-                  Add today's feeling !
-                </button>
-              </div>
-            </div>
-          </form>
+      <div className="overlay" onClick={props.closeModalHandler} />
+      <form
+        className="modal-content"
+        onSubmit={props.dataExisted ? props.updateFeeling : props.addFeeling}
+      >
+        <div className="posting">
+          <p>How was your day? {props.emoji}</p>
+          <div className="emojis">
+            <span onClick={props.emojiHandler}>😆</span>
+            <span onClick={props.emojiHandler}>😡</span>
+            <span onClick={props.emojiHandler}>😢</span>
+            <span onClick={props.emojiHandler}>😀</span>
+          </div>
+          <div className="message">
+            <textarea
+              className="kimochi"
+              onChange={props.kimochiHandler}
+              value={props.kimochi}
+              required
+            />
+            <button className="add-btn" type="submit">
+              {props.dataExisted
+                ? "Update your feeling!"
+                : "Add your feeling of this day!"}
+            </button>
+          </div>
         </div>
-      )}
+      </form>
     </div>
   );
 };
