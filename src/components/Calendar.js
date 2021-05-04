@@ -23,7 +23,7 @@ class Calendar extends React.Component {
     modalIsVisible: false,
     emoji: "",
     kimochi: "",
-    clickedDate: "",
+    clickedDate: new Date(),
     id: "",
     dataExisted: false,
     errorMessage: "",
@@ -37,7 +37,7 @@ class Calendar extends React.Component {
         if (change.type === "added") {
           this.state.diaryData.push(data);
           const dayElement = document.getElementsByClassName(
-            format(data.date.toDate(), "yyyy.MM.dd")
+            format(data.date.toDate(), "yyyy-MM-dd")
           )[0];
           if (dayElement) {
             dayElement.classList.add("has-posts");
@@ -115,7 +115,7 @@ class Calendar extends React.Component {
 
         days.push(
           <div
-            className={`col cell ${format(day, "yyyy.MM.dd")} ${
+            className={`col cell ${format(day, "yyyy-MM-dd")} ${
               !isSameMonth(day, monthStart)
                 ? "disabled"
                 : isSameDay(day, selectedDate)
@@ -142,15 +142,14 @@ class Calendar extends React.Component {
   }
 
   onDateClick = (day) => {
-    const choseDay = format(day, "yyyy.MM.dd");
     var numberOfPosts = 0;
     this.state.diaryData.forEach((data, index) => {
       // when i clicked on the data that already existed
-      if (choseDay == format(data.date.toDate(), "yyyy.MM.dd")) {
+      if (format(day, "yyyy-MM-dd") == format(data.date.toDate(), "yyyy-MM-dd")) {
         numberOfPosts++;
         this.setState({ emoji: data.emoji });
         this.setState({ kimochi: data.kimochi });
-        this.setState({ clickedDate: choseDay });
+        this.setState({ clickedDate: day });
         this.setState({ dataExisted: true });
         this.getId(index);
         this.showModal();
@@ -158,7 +157,7 @@ class Calendar extends React.Component {
     });
     
     if (numberOfPosts == 0) {
-      this.setState({ clickedDate: choseDay });
+      this.setState({ clickedDate: day });
       this.showModal();
     }
     
@@ -181,9 +180,9 @@ class Calendar extends React.Component {
   };
 
   AddTodaysFeeling = () => {
-    const today = format(new Date(), "yyyy.MM.dd");
+    const today = new Date()
     this.state.diaryData.forEach((data, index) => {
-      if (format(data.date.toDate(), "yyyy.MM.dd") === today) {
+      if (format(data.date.toDate(), "yyyy-MM-dd") === format(today, "yyyy-MM-dd")) {
         this.setState({ emoji: data.emoji });
         this.setState({ kimochi: data.kimochi });
         this.setState({clickedDate: today})
@@ -197,7 +196,7 @@ class Calendar extends React.Component {
   closeModal = () => {
     this.setState({ emoji: "" });
     this.setState({ kimochi: "" });
-    this.setState({ clickedDate: ""});
+    this.setState({ clickedDate: new Date()});
     this.setState({ dataExisted: false });
     this.setState({ id: "" });
     this.setState({ errorMessage: "" });
@@ -206,6 +205,11 @@ class Calendar extends React.Component {
 
   emojiHandler = (e) => {
     this.setState({ emoji: e.target.innerHTML });
+    var els = document.getElementsByClassName("emoji")
+    Array.from(els).forEach((el) => {
+      el.classList.remove("selected")
+    });
+    e.target.classList.add("selected")
   };
 
   kimochiHandler = (e) => {
@@ -279,12 +283,12 @@ class Calendar extends React.Component {
               closeModalHandler={this.closeModal}
               dataExisted={this.state.dataExisted}
               errorMessage={this.state.errorMessage}
-              day={this.state.clickedDate}
+              day={format(this.state.clickedDate, "d MMM yyyy")}
             />
           )}
         </div>
         <button className="add-btn" onClick={this.AddTodaysFeeling}>
-          Add today's your feeling!
+          Add today's feeling!
         </button>
       </div>
     );

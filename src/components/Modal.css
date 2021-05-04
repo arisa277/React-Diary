@@ -1,99 +1,100 @@
-
 .emojis {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    width: 100%;
-    background-color: rgba(0, 0, 0, 0.025);
-    border-radius: 15px;
-    padding: 15px;
-    color: rgba(0, 0, 0, 0.8);
-    font-size: 18px;
-    margin-bottom: 15px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1), inset 0 0 25px rgba(0, 0, 0, 0.025);
-  }
-  
-  .emojis span {
-    display: block;
-    font-size: 40px;
-    cursor: pointer;
-  }
-  
-  .emoji span.selected {
-    text-shadow: 0 0 5px rgba(0, 0, 0, 1);
-  }
-  
-  .message {
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-    border-radius: 15px;
-  }
-  
-  textarea {
-    display: block;
-    width: 100%;
-    resize: none;
-    border: none;
-    background-color: rgba(0, 0, 0, 0.025);
-    border-radius: 15px 15px 0 0;
-    padding: 15px;
-    outline: none;
-    color: rgba(0, 0, 0, 0.8);
-    font-size: 18px;
-    box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.025);
-  }
-  
-  .add-btn {
-    cursor: pointer;
-    display: block;
-    border: none;
-    width: 100%;
-    padding: 10px;
-    font-size: 20px;
-    border-radius: 0 0 15px 15px;
-    background: var(--main-color);
-    color: white;
-  }
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.025);
+  border-radius: 15px;
+  padding: 15px;
+  color: rgba(0, 0, 0, 0.8);
+  font-size: 18px;
+  margin-bottom: 15px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1), inset 0 0 25px rgba(0, 0, 0, 0.025);
+}
+
+.emojis span {
+  display: block;
+  font-size: 40px;
+  cursor: pointer;
+  opacity: 0.7;
+  user-select: none;
+}
+
+.emojis span.selected {
+  opacity: 1;
+}
+
+.message {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  resize: none;
+  border: none;
+  background-color: rgba(0, 0, 0, 0.025);
+  border-radius: 15px 15px 0 0;
+  padding: 15px;
+  outline: none;
+  color: rgba(0, 0, 0, 0.8);
+  font-size: 18px;
+  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.025);
+}
+
+.add-btn {
+  cursor: pointer;
+  display: block;
+  border: none;
+  width: 100%;
+  padding: 15px;
+  font-size: 20px;
+  border-radius: 0 0 15px 15px;
+  background: var(--main-color);
+  color: white;
+}
 .modal-btn {
-    cursor: pointer;
-    display: block;
-    padding: 10px;
-    color: white;
-    border-radius: 0 0 15px 15px;
-    width: 100%;
-    font-size: 22px;
-    border: none;
-    background: var(--main-color);
-  }
-  
-  .overlay {
-    /*　画面全体を覆う設定　*/
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    z-index: 10;
-    background: rgba(0, 0, 0, 0.75);
-  }
-  
-  .modal-content {
-    padding: 1em;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 10px;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2), 0 0 5px rgba(0, 0, 0, 0.02);
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 100;
-    overflow: hidden;
-  }
-  .clickedDay {
-    font-size: 18px;
-  }
-  .question {
-    font-size: 19px;
-    margin-bottom: 15px;
-  }
-  .errorMessage {
-    color: crimson;
-  }
+  cursor: pointer;
+  display: block;
+  padding: 10px;
+  color: white;
+  border-radius: 0 0 15px 15px;
+  width: 100%;
+  font-size: 22px;
+  border: none;
+  background: var(--main-color);
+}
+
+.overlay {
+  /*　画面全体を覆う設定　*/
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 10;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.modal-content {
+  padding: 1em;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.2), 0 0 5px rgba(0, 0, 0, 0.02);
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  overflow: hidden;
+}
+.clickedDay {
+  font-size: 18px;
+}
+.question {
+  font-size: 19px;
+  margin-bottom: 15px;
+}
+.errorMessage {
+  color: crimson;
+}

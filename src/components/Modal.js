@@ -13,10 +13,10 @@ const Modal = (props) => {
           <p className="clickedDay">{props.day}</p>
           <p className="question">How was your day? {props.emoji}</p>
           <div className="emojis">
-            <span onClick={props.emojiHandler}>😆</span>
-            <span onClick={props.emojiHandler}>😡</span>
-            <span onClick={props.emojiHandler}>😢</span>
-            <span onClick={props.emojiHandler}>😀</span>
+            <span className="emoji happy" onClick={props.emojiHandler}>😆</span>
+            <span className="emoji angry" onClick={props.emojiHandler}>😡</span>
+            <span className="emoji sad" onClick={props.emojiHandler}>😢</span>
+            <span className="emoji good" onClick={props.emojiHandler}>😀</span>
           </div>
           <p className="errorMessage">{props.errorMessage}</p>
           <div className="message">
